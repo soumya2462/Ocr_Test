@@ -1,0 +1,70 @@
+<!-- views/search.ejs - Search Page -->
+<%- include('partials/header', { title }) %>
+
+<div class="container">
+    <h1><i class="fas fa-search"></i> <%= title %></h1>
+
+    <div class="card search-card">
+        <form action="/search" method="GET" class="search-form">
+            <div class="search-input-group">
+                <input 
+                    type="text" 
+                    name="q" 
+                    placeholder="Search by Voter ID, Name, or Age..." 
+                    value="<%= query %>"
+                    class="form-control"
+                    autofocus
+                >
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </form>
+
+        <% if (searchPerformed) { %>
+            <div class="search-results">
+                <h2>Search Results (<%= totalResults %> found)</h2>
+
+                <% if (results.length === 0) { %>
+                    <div class="no-results">
+                        <i class="fas fa-search fa-3x"></i>
+                        <p>No voters found matching "<%= query %>"</p>
+                        <p class="text-muted">Try different search terms</p>
+                    </div>
+                <% } else { %>
+                    <div class="results-grid">
+                        <% results.forEach(voter => { %>
+                            <div class="result-card">
+                                <div class="result-header">
+                                    <h3><%= voter.name.english || voter.name.odia %></h3>
+                                    <span class="voter-id"><%= voter.voterId %></span>
+                                </div>
+                                <div class="result-body">
+                                    <p><strong>Age:</strong> <%= voter.age || 'N/A' %></p>
+                                    <p><strong>Gender:</strong> 
+                                        <span class="badge badge-<%= voter.gender === 'Male' ? 'blue' : 'pink' %>">
+                                            <%= voter.gender %>
+                                        </span>
+                                    </p>
+                                    <p><strong>House:</strong> <%= voter.address.houseNo || 'N/A' %></p>
+                                    <p><strong>Locality:</strong> <%= voter.address.locality %></p>
+                                </div>
+                                <div class="result-footer">
+                                    <a href="/voter/<%= voter.voterId %>" class="btn btn-sm btn-primary">
+                                        View Details <i class="fas fa-arrow-right"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } %>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>
+
+
+
+

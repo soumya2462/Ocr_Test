@@ -1,0 +1,128 @@
+<!-- views/statistics.ejs - Statistics Page -->
+<%- include('partials/header', { title }) %>
+
+<div class="container">
+    <h1><i class="fas fa-chart-bar"></i> <%= title %></h1>
+
+    <!-- Overall Statistics -->
+    <div class="stats-grid">
+        <div class="stat-card card-primary">
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-content">
+                <h3><%= statistics.totalVoters %></h3>
+                <p>Total Voters</p>
+            </div>
+        </div>
+
+        <div class="stat-card card-blue">
+            <div class="stat-icon">
+                <i class="fas fa-male"></i>
+            </div>
+            <div class="stat-content">
+                <h3><%= statistics.maleVoters %></h3>
+                <p>Male Voters</p>
+                <small><%= ((statistics.maleVoters / statistics.totalVoters) * 100).toFixed(1) %>%</small>
+            </div>
+        </div>
+
+        <div class="stat-card card-pink">
+            <div class="stat-icon">
+                <i class="fas fa-female"></i>
+            </div>
+            <div class="stat-content">
+                <h3><%= statistics.femaleVoters %></h3>
+                <p>Female Voters</p>
+                <small><%= ((statistics.femaleVoters / statistics.totalVoters) * 100).toFixed(1) %>%</small>
+            </div>
+        </div>
+
+        <div class="stat-card card-purple">
+            <div class="stat-icon">
+                <i class="fas fa-calculator"></i>
+            </div>
+            <div class="stat-content">
+                <h3><%= statistics.avgAge || 'N/A' %></h3>
+                <p>Average Age</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Age Distribution -->
+    <div class="card">
+        <h2><i class="fas fa-chart-pie"></i> Age Distribution</h2>
+        <div class="chart-container">
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Age Group</th>
+                        <th>Number of Voters</th>
+                        <th>Percentage</th>
+                        <th>Visual</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% Object.entries(ageGroups).forEach(([group, count]) => { 
+                        const percentage = ((count / statistics.totalVoters) * 100).toFixed(1);
+                    %>
+                        <tr>
+                            <td><strong><%= group %></strong></td>
+                            <td><%= count %></td>
+                            <td><%= percentage %>%</td>
+                            <td>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: <%= percentage %>%"></div>
+                                </div>
+                            </td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Section-wise Distribution -->
+    <div class="card">
+        <h2><i class="fas fa-layer-group"></i> Section-wise Distribution</h2>
+        <div class="chart-container">
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Number of Voters</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% Object.entries(sectionStats).forEach(([section, count]) => { 
+                        const percentage = ((count / statistics.totalVoters) * 100).toFixed(1);
+                    %>
+                        <tr>
+                            <td><strong>Section <%= section %></strong></td>
+                            <td><%= count %></td>
+                            <td><%= percentage %>%</td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gender Ratio Chart -->
+    <div class="card">
+        <h2><i class="fas fa-venus-mars"></i> Gender Ratio</h2>
+        <div class="gender-chart">
+            <div class="gender-bar">
+                <div class="male-bar" style="width: <%= (statistics.maleVoters / statistics.totalVoters) * 100 %>%">
+                    <span>Male: <%= statistics.maleVoters %></span>
+                </div>
+                <div class="female-bar" style="width: <%= (statistics.femaleVoters / statistics.totalVoters) * 100 %>%">
+                    <span>Female: <%= statistics.femaleVoters %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            padding: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header-info {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .header-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9em;
+        }
+
+        .info-value {
+            color: #333;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+        }
+
+        thead {
+            background: #667eea;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tbody tr:hover {
+            background: #f8f9ff;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-input {
+            flex: 1;
+            min-width: 200px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .voter-card {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .voter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .voter-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .voter-id {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        .voter-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .detail-item {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .badge-male {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-female {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .page-btn {
+            padding: 8px 15px;
+            border: 1px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .page-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 <%= data.documentInfo.title %></h1>
+            <div class="header-info">
+                <div class="header-item">
+                    <span>📍</span>
+                    <span><%= data.pollingStation.location.district %>, <%= data.pollingStation.location.state %></span>
+                </div>
+                <div class="header-item">
+                    <span>🗳️</span>
+                    <span>PS <%= data.pollingStation.number %>: <%= data.pollingStation.name %></span>
+                </div>
+                <div class="header-item">
+                    <span>📅</span>
+                    <span>Revision: <%= data.documentInfo.revisionDate %></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a href="/download/<%= filename %>" class="btn btn-primary">⬇️ Download JSON</a>
+            <a href="/list" class="btn btn-secondary">📂 All Files</a>
+            <a href="/" class="btn btn-secondary">🏠 Home</a>
+        </div>
+
+        <!-- Statistics -->
+        <div class="card">
+            <h2 class="card-title">📈 Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value"><%= data.statistics.totalVoters %></div>
+                    <div class="stat-label">Total Voters</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value"><%= data.statistics.maleVoters %></div>
+                    <div class="stat-label">Male Voters</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value"><%= data.statistics.femaleVoters %></div>
+                    <div class="stat-label">Female Voters</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value"><%= data.statistics.transgenderVoters %></div>
+                    <div class="stat-label">Transgender</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Polling Station Info -->
+        <div class="card">
+            <h2 class="card-title">📍 Polling Station Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">Station Number</div>
+                    <div class="info-value"><%= data.pollingStation.number %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Station Name</div>
+                    <div class="info-value"><%= data.pollingStation.name %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Part Number</div>
+                    <div class="info-value"><%= data.pollingStation.partNumber %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Building</div>
+                    <div class="info-value"><%= data.pollingStation.location.buildingName %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Village</div>
+                    <div class="info-value"><%= data.pollingStation.location.village %></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">PIN Code</div>
+                    <div class="info-value"><%= data.pollingStation.location.pincode %></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Voters List -->
+        <div class="card">
+            <h2 class="card-title">👥 Voters List (<span id="voterCount"><%= data.voters.length %></span>)</h2>
+            
+            <div class="filter-bar">
+                <input type="text" class="filter-input" id="searchInput" placeholder="🔍 Search by name or voter ID...">
+                <select class="filter-select" id="genderFilter">
+                    <option value="">All Genders</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+                <select class="filter-select" id="sectionFilter">
+                    <option value="">All Sections</option>
+                    <option value="Section 1">Section 1</option>
+                    <option value="Section 2">Section 2</option>
+                </select>
+            </div>
+
+            <div id="votersList">
+                <% data.voters.forEach(voter => { %>
+                    <div class="voter-card" data-name="<%= voter.name.english %>" data-voter-id="<%= voter.voterId %>" data-gender="<%= voter.gender %>" data-section="<%= voter.section %>">
+                        <div class="voter-header">
+                            <div class="voter-name">
+                                #<%= voter.serialNo %> - <%= voter.name.english %>
+                                <span class="badge badge-<%= voter.gender.toLowerCase() %>"><%= voter.gender %></span>
+                            </div>
+                            <div class="voter-id"><%= voter.voterId %></div>
+                        </div>
+                        <div class="voter-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Name (Odia):</span> <%= voter.name.odia %>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label"><%= voter.relation.type %>:</span> <%= voter.relation.name.english %>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Age:</span> <%= voter.age %> years
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">House No:</span> <%= voter.address.houseNo %>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Locality:</span> <%= voter.address.locality %>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Section:</span> <%= voter.section %>
+                            </div>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter functionality
+        const searchInput = document.getElementById('searchInput');
+        const genderFilter = document.getElementById('genderFilter');
+        const sectionFilter = document.getElementById('sectionFilter');
+        const voterCards = document.querySelectorAll('.voter-card');
+        const voterCount = document.getElementById('voterCount');
+
+        function filterVoters() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const selectedGender = genderFilter.value;
+            const selectedSection = sectionFilter.value;
+            let visibleCount = 0;
+
+            voterCards.forEach(card => {
+                const name = card.dataset.name.toLowerCase();
+                const voterId = card.dataset.voterId.toLowerCase();
+                const gender = card.dataset.gender;
+                const section = card.dataset.section;
+
+                const matchesSearch = name.includes(searchTerm) || voterId.includes(searchTerm);
+                const matchesGender = !selectedGender || gender === selectedGender;
+                const matchesSection = !selectedSection || section === selectedSection;
+
+                if (matchesSearch && matchesGender && matchesSection) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            voterCount.textContent = visibleCount;
+        }
+
+        searchInput.addEventListener('input', filterVoters);
+        genderFilter.addEventListener('change', filterVoters);
+        sectionFilter.addEventListener('change', filterVoters);
+    </script>
+</body>
+</html>

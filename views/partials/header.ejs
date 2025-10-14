@@ -1,0 +1,40 @@
+
+<!-- views/partials/header.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Electoral Roll System</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand">
+                <i class="fas fa-vote-yea"></i>
+                <span>Electoral Roll System</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/" class="<%= title.includes('Dashboard') ? 'active' : '' %>">
+                    <i class="fas fa-home"></i> Dashboard
+                </a></li>
+                <li><a href="/voters" class="<%= title.includes('Voters') || title.includes('Voter Details') ? 'active' : '' %>">
+                    <i class="fas fa-users"></i> Voters
+                </a></li>
+                <li><a href="/statistics" class="<%= title.includes('Statistics') ? 'active' : '' %>">
+                    <i class="fas fa-chart-bar"></i> Statistics
+                </a></li>
+                <li><a href="/search" class="<%= title.includes('Search') ? 'active' : '' %>">
+                    <i class="fas fa-search"></i> Search
+                </a></li>
+                <li><a href="/translate" class="<%= title.includes('Translation') ? 'active' : '' %>">
+                    <i class="fas fa-language"></i> Translate
+                </a></li>
+            </ul>
+        </div>
+    </nav>
+</body>
+</html>

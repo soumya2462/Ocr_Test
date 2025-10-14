@@ -1,0 +1,126 @@
+
+<!-- views/voter-detail.ejs - Single Voter Detail -->
+<%- include('partials/header', { title }) %>
+
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/">Home</a> / <a href="/voters">Voters</a> / <%= voter.voterId %>
+    </div>
+
+    <div class="voter-detail-card">
+        <div class="card">
+            <div class="card-header">
+                <h1><i class="fas fa-user"></i> Voter Details</h1>
+                <span class="voter-id-large"><%= voter.voterId %></span>
+            </div>
+
+            <div class="voter-detail-grid">
+                <!-- Personal Information -->
+                <div class="detail-section">
+                    <h2><i class="fas fa-id-card"></i> Personal Information</h2>
+                    <div class="detail-group">
+                        <div class="detail-item">
+                            <strong>Serial Number:</strong>
+                            <span><%= voter.serialNo %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Voter ID:</strong>
+                            <span class="voter-id"><%= voter.voterId %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Name (English):</strong>
+                            <span><%= voter.name.english || 'N/A' %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Name (Odia):</strong>
+                            <span class="odia-text"><%= voter.name.odia || 'N/A' %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Age:</strong>
+                            <span><%= voter.age || 'N/A' %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Gender:</strong>
+                            <span class="badge badge-<%= voter.gender === 'Male' ? 'blue' : 'pink' %>">
+                                <%= voter.gender %>
+                            </span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Section:</strong>
+                            <span><%= voter.section || 'N/A' %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Relation Information -->
+                <div class="detail-section">
+                    <h2><i class="fas fa-users"></i> Relation Information</h2>
+                    <div class="detail-group">
+                        <div class="detail-item">
+                            <strong>Relation Type:</strong>
+                            <span><%= voter.relation.type || 'N/A' %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Relation Name (English):</strong>
+                            <span><%= voter.relation.name.english || 'N/A' %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Relation Name (Odia):</strong>
+                            <span class="odia-text"><%= voter.relation.name.odia || 'N/A' %></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information -->
+                <div class="detail-section">
+                    <h2><i class="fas fa-map-marker-alt"></i> Address Information</h2>
+                    <div class="detail-group">
+                        <div class="detail-item">
+                            <strong>House Number:</strong>
+                            <span><%= voter.address.houseNo || 'N/A' %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Locality:</strong>
+                            <span><%= voter.address.locality %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Village:</strong>
+                            <span><%= voter.address.village %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>District:</strong>
+                            <span><%= voter.address.district %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>State:</strong>
+                            <span><%= voter.address.state %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Pincode:</strong>
+                            <span><%= voter.address.pincode %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Polling Station:</strong>
+                            <span><%= voter.address.pollingStation %></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Part Number:</strong>
+                            <span><%= voter.address.partNo %></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-actions">
+                <a href="/voters" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+                <button onclick="window.print()" class="btn btn-primary">
+                    <i class="fas fa-print"></i> Print
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

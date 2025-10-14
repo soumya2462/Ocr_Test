@@ -1,0 +1,116 @@
+<!-- views/voters.ejs - All Voters List -->
+<%- include('partials/header', { title }) %>
+
+<div class="container">
+    <h1><i class="fas fa-users"></i> <%= title %></h1>
+
+    <!-- Filters -->
+    <div class="card filters-section">
+        <form action="/voters" method="GET" class="filters-form">
+            <div class="filter-group">
+                <input type="text" name="search" placeholder="Search by Name or ID..." value="<%= search %>" class="form-control">
+            </div>
+            <div class="filter-group">
+                <select name="gender" class="form-control">
+                    <option value="">All Genders</option>
+                    <option value="Male" <%= gender === 'Male' ? 'selected' : '' %>>Male</option>
+                    <option value="Female" <%= gender === 'Female' ? 'selected' : '' %>>Female</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select name="section" class="form-control">
+                    <option value="">All Sections</option>
+                    <option value="1" <%= section === '1' ? 'selected' : '' %>>Section 1</option>
+                    <option value="2" <%= section === '2' ? 'selected' : '' %>>Section 2</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <select name="limit" class="form-control">
+                    <option value="25" <%= limit === 25 ? 'selected' : '' %>>25 per page</option>
+                    <option value="50" <%= limit === 50 ? 'selected' : '' %>>50 per page</option>
+                    <option value="100" <%= limit === 100 ? 'selected' : '' %>>100 per page</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            <a href="/voters" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Clear
+            </a>
+        </form>
+    </div>
+
+    <!-- Results Summary -->
+    <div class="results-summary">
+        <p>Showing <%= voters.length %> of <%= totalVoters %> voters</p>
+    </div>
+
+    <!-- Voters Table -->
+    <div class="card">
+        <div class="table-responsive">
+            <table class="voters-table">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Voter ID</th>
+                        <th>Name (English)</th>
+                        <th>Name (Odia)</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th>House No</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (voters.length === 0) { %>
+                        <tr>
+                            <td colspan="8" class="text-center">No voters found</td>
+                        </tr>
+                    <% } else { %>
+                        <% voters.forEach(voter => { %>
+                            <tr>
+                                <td><%= voter.serialNo %></td>
+                                <td><span class="voter-id"><%= voter.voterId %></span></td>
+                                <td><%= voter.name.english || 'N/A' %></td>
+                                <td><%= voter.name.odia || 'N/A' %></td>
+                                <td><%= voter.age || 'N/A' %></td>
+                                <td>
+                                    <span class="badge badge-<%= voter.gender === 'Male' ? 'blue' : 'pink' %>">
+                                        <%= voter.gender %>
+                                    </span>
+                                </td>
+                                <td><%= voter.address.houseNo || 'N/A' %></td>
+                                <td>
+                                    <a href="/voter/<%= voter.voterId %>" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    <% if (totalPages > 1) { %>
+        <div class="pagination">
+            <% if (currentPage > 1) { %>
+                <a href="/voters?page=<%= currentPage - 1 %>&search=<%= search %>&gender=<%= gender %>&section=<%= section %>&limit=<%= limit %>" class="btn btn-secondary">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </a>
+            <% } %>
+
+            <span class="page-info">Page <%= currentPage %> of <%= totalPages %></span>
+
+            <% if (currentPage < totalPages) { %>
+                <a href="/voters?page=<%= currentPage + 1 %>&search=<%= search %>&gender=<%= gender %>&section=<%= section %>&limit=<%= limit %>" class="btn btn-secondary">
+                    Next <i class="fas fa-chevron-right"></i>
+                </a>
+            <% } %>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

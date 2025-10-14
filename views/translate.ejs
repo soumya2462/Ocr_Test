@@ -1,0 +1,110 @@
+
+<!-- views/translate.ejs - Translation Page -->
+<%- include('partials/header', { title }) %>
+
+<div class="container">
+    <h1><i class="fas fa-language"></i> <%= title %></h1>
+
+    <div class="card translate-card">
+        <div class="translate-container">
+            <div class="translate-input">
+                <h3>Odia Text (ଓଡ଼ିଆ)</h3>
+                <textarea 
+                    id="odiaText" 
+                    placeholder="Enter Odia text here..."
+                    rows="8"
+                    class="form-control"
+                ></textarea>
+            </div>
+
+            <div class="translate-action">
+                <button onclick="translateText()" class="btn btn-primary btn-large">
+                    <i class="fas fa-exchange-alt"></i>
+                    Translate
+                </button>
+            </div>
+
+            <div class="translate-output">
+                <h3>English Translation</h3>
+                <textarea 
+                    id="englishText" 
+                    placeholder="Translation will appear here..."
+                    rows="8"
+                    class="form-control"
+                    readonly
+                ></textarea>
+            </div>
+        </div>
+
+        <div class="translate-examples">
+            <h3>Quick Examples:</h3>
+            <div class="example-buttons">
+                <button onclick="setExample('ନମସ୍କାର')" class="btn btn-sm btn-secondary">ନମସ୍କାର (Namaste)</button>
+                <button onclick="setExample('ଗୋରିଚିରା')" class="btn btn-sm btn-secondary">ଗୋରିଚିରା (Gorichira)</button>
+                <button onclick="setExample('ମତଦାତା')" class="btn btn-sm btn-secondary">ମତଦାତା (Voter)</button>
+                <button onclick="setExample('ଚିକିତ୍ସାଳୟ')" class="btn btn-sm btn-secondary">ଚିକିତ୍ସାଳୟ (Hospital)</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="loading" class="loading-indicator" style="display: none;">
+        <i class="fas fa-spinner fa-spin"></i> Translating...
+    </div>
+
+    <div id="error" class="alert alert-error" style="display: none;"></div>
+</div>
+
+<script>
+async function translateText() {
+    const odiaText = document.getElementById('odiaText').value;
+    const englishText = document.getElementById('englishText');
+    const loading = document.getElementById('loading');
+    const errorDiv = document.getElementById('error');
+
+    if (!odiaText.trim()) {
+        alert('Please enter some Odia text to translate');
+        return;
+    }
+
+    loading.style.display = 'block';
+    errorDiv.style.display = 'none';
+    englishText.value = '';
+
+    try {
+        const response = await fetch('/api/translate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: odiaText })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            englishText.value = data.translated;
+        } else {
+            throw new Error(data.error || 'Translation failed');
+        }
+    } catch (error) {
+        errorDiv.textContent = 'Error: ' + error.message;
+        errorDiv.style.display = 'block';
+    } finally {
+        loading.style.display = 'none';
+    }
+}
+
+function setExample(text) {
+    document.getElementById('odiaText').value = text;
+    translateText();
+}
+
+// Allow Enter key in textarea but not to submit
+document.getElementById('odiaText').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && e.ctrlKey) {
+        translateText();
+    }
+});
+</script>
+
+<%- include('partials/footer') %>

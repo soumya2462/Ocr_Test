@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 2em;
+        }
+
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status {
+            font-size: 1.2em;
+            color: #666;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #f0f2ff;
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 30px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .steps {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .step {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            background: #f8f9ff;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .step.active {
+            background: #e8eaff;
+            border-left: 4px solid #667eea;
+        }
+
+        .step.completed {
+            background: #e8ffe8;
+            border-left: 4px solid #4caf50;
+        }
+
+        .step-icon {
+            font-size: 1.5em;
+        }
+
+        .step-text {
+            flex: 1;
+        }
+
+        .step-status {
+            font-weight: bold;
+        }
+
+        .logs {
+            text-align: left;
+            max-height: 200px;
+            overflow-y: auto;
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .log-line {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8ffe8;
+            border-radius: 15px;
+            border: 2px solid #4caf50;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result h2 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .error {
+            display: none;
+            background: #fee;
+            color: #c33;
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #fcc;
+            margin: 20px 0;
+        }
+
+        .error.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Processing Electoral Roll</h1>
+        
+        <div class="spinner" id="spinner"></div>
+        
+        <div class="status" id="status">Initializing...</div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+
+        <div class="steps">
+            <div class="step" id="step1">
+                <div class="step-icon">📄</div>
+                <div class="step-text">
+                    <div class="step-status">Converting PDF to Images</div>
+                    <div>Preparing document for OCR</div>
+                </div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-icon">👁️</div>
+                <div class="step-text">
+                    <div class="step-status">Running OCR</div>
+                    <div>Extracting text from images</div>
+                </div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-icon">🌐</div>
+                <div class="step-text">
+                    <div class="step-status">Translating Text</div>
+                    <div>Converting Odia to English</div>
+                </div>
+            </div>
+            <div class="step" id="step4">
+                <div class="step-icon">📊</div>
+                <div class="step-text">
+                    <div class="step-status">Structuring Data</div>
+                    <div>Creating JSON output</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="logs" id="logs">
+            <div class="log-line">Starting process...</div>
+        </div>
+
+        <div class="error" id="error">
+            <h3>❌ Error</h3>
+            <p id="errorMessage"></p>
+        </div>
+
+        <div class="result" id="result">
+            <h2>✅ Processing Complete!</h2>
+            
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-value" id="pagesCount">-</div>
+                    <div class="stat-label">Pages Processed</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="votersCount">-</div>
+                    <div class="stat-label">Voters Found</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="timeCount">-</div>
+                    <div class="stat-label">Processing Time</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <a href="#" class="btn" id="viewBtn">👁️ View Data</a>
+                <a href="#" class="btn btn-secondary" id="downloadBtn">⬇️ Download JSON</a>
+            </div>
+            
+            <div style="margin-top: 15px;">
+                <a href="/" class="btn btn-secondary">🔄 Process Another</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const filename = '<%= filename %>';
+        let currentStep = 0;
+        const steps = ['step1', 'step2', 'step3', 'step4'];
+        
+        // Start processing
+        window.addEventListener('load', startProcessing);
+
+        async function startProcessing() {
+            try {
+                addLog('🚀 Starting processing...');
+                updateProgress(10, 'Initializing...');
+
+                const response = await fetch(`/process/run/${filename}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Processing failed');
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    handleSuccess(data);
+                } else {
+                    handleError(data.error);
+                }
+
+            } catch (error) {
+                handleError(error.message);
+            }
+        }
+
+        function updateProgress(percent, status) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('progressFill').textContent = Math.round(percent) + '%';
+            document.getElementById('status').textContent = status;
+
+            // Update active step
+            const stepIndex = Math.floor((percent / 100) * steps.length);
+            steps.forEach((stepId, index) => {
+                const stepEl = document.getElementById(stepId);
+                stepEl.classList.remove('active', 'completed');
+                if (index < stepIndex) {
+                    stepEl.classList.add('completed');
+                } else if (index === stepIndex) {
+                    stepEl.classList.add('active');
+                }
+            });
+        }
+
+        function addLog(message) {
+            const logs = document.getElementById('logs');
+            const logLine = document.createElement('div');
+            logLine.className = 'log-line';
+            logLine.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logs.appendChild(logLine);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        // Simulate progress updates
+        let progress = 10;
+        const progressInterval = setInterval(() => {
+            if (progress < 90) {
+                progress += Math.random() * 5;
+                const statusMessages = [
+                    'Converting PDF pages...',
+                    'Running OCR on page ',
+                    'Translating text...',
+                    'Parsing voter data...',
+                    'Structuring information...'
+                ];
+                const status = statusMessages[Math.floor(Math.random() * statusMessages.length)];
+                updateProgress(progress, status);
+                addLog(status);
+            }
+        }, 2000);
+
+        function handleSuccess(data) {
+            clearInterval(progressInterval);
+            updateProgress(100, 'Complete!');
+            addLog('✅ Processing completed successfully');
+            
+            document.getElementById('spinner').style.display = 'none';
+            
+            // Show results
+            document.getElementById('pagesCount').textContent = data.stats.pages;
+            document.getElementById('votersCount').textContent = data.stats.totalVoters;
+            document.getElementById('timeCount').textContent = data.stats.processingTime;
+            
+            document.getElementById('viewBtn').href = `/view/${data.outputFile}`;
+            document.getElementById('downloadBtn').href = `/download/${data.outputFile}`;
+            
+            document.getElementById('result').classList.add('show');
+        }
+
+        function handleError(message) {
+            clearInterval(progressInterval);
+            document.getElementById('spinner').style.display = 'none';
+            document.getElementById('status').textContent = 'Error occurred';
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('error').classList.add('show');
+            addLog('❌ Error: ' + message);
+        }
+    </script>
+</body>
+</html>
