@@ -474,11 +474,11 @@ class EnhancedOCRProcessor {
   extractKeyValues(inputText) {
     const result = {};
     const keys = [
-        ["ନାମ", "Name"],
-        ["ବୟସ", "Age"],
-        ["ଲିଂଗ", "Gender"],
-        ["ନଂ", "No", "ନମ୍ବର"],
-        ["ସ୍ବାମୀଙ୍କ ନାମ", "Husband Name", "ସ୍ୱାମୀ", "Husband", "ପିତାଙ୍କ ନାମ", "Father Name", "ମାତାଙ୍କ ନାମ", "Mother Name"],
+        ["name","ନାମ", "Name"],
+        ["age","ବୟସ", "Age"],
+        ["gender","ଲିଗଂ", "ଲିଂଗ", "Gender"],
+        ["houseNo","ଘର ନଂ", "House No", "ଘର ନମ୍ବର"],
+        ["guardianName","ସ୍ବାମୀଙ୍କ ନାମ", "Husband Name", "ସ୍ୱାମୀ", "Husband", "ପିତାଙ୍କ ନାମ", "Father Name", "ମାତାଙ୍କ ନାମ", "Mother Name"],
     ];
 
     // Flatten all key alternatives for the lookahead pattern
@@ -499,7 +499,7 @@ class EnhancedOCRProcessor {
                 const regex = new RegExp(`(?:${k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")})\\s*:`, "i");
                 return regex.test(inputText);
             });
-            keyName = matchedKey || key[0];
+            keyName = key[0];
         } else {
             // Single key
             keyPattern = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -550,45 +550,48 @@ class EnhancedOCRProcessor {
     const housePattern = /(\d+)\s*(?:ନଂ|No|ନମ୍ବର)/i;
     const guardianPattern = /(?:ପିତା|Father|ସ୍ୱାମୀ|Husband|ମାତା|Mother)[\s:]*([^\n]+)/i;
     
-    let name = '';
-    let age = '';
-    let gender = '';
-    let houseNo = '';
-    let guardianName = '';
+    // let name = '';
+    // let age = '';
+    // let gender = '';
+    // let houseNo = '';
+    // let guardianName = '';
+    let result = {};
     
     // Simple extraction logic
     for (const line of lines) {
       const trimmedLine = line.trim();
-      
-      // Skip voter ID line
-      if (trimmedLine === voterId) continue;
-      
-      // Name: usually first non-ID, non-number line with Odia text
-      if (!name && namePattern.test(trimmedLine) && !line.includes(voterId) && trimmedLine.length > 3) {
-        name = trimmedLine;
+      const data = this.extractKeyValues(trimmedLine);
+      for(const key in data) {
+        if(data[key] && !result[key]) {
+          result[key] = data[key];
+        }
       }
+      // // Skip voter ID line
+      // if (trimmedLine === voterId) continue;
       
-      const ageMatch = trimmedLine.match(agePattern);
-      if (ageMatch) age = ageMatch[1];
+      // // Name: usually first non-ID, non-number line with Odia text
+      // if (!name && namePattern.test(trimmedLine) && !line.includes(voterId) && trimmedLine.length > 3) {
+      //   name = trimmedLine;
+      // }
       
-      const genderMatch = trimmedLine.match(genderPattern);
-      if (genderMatch) gender = genderMatch[1];
+      // const ageMatch = trimmedLine.match(agePattern);
+      // if (ageMatch) age = ageMatch[1];
       
-      const houseMatch = trimmedLine.match(housePattern);
-      if (houseMatch) houseNo = houseMatch[1];
+      // const genderMatch = trimmedLine.match(genderPattern);
+      // if (genderMatch) gender = genderMatch[1];
       
-      const guardianMatch = trimmedLine.match(guardianPattern);
-      if (guardianMatch) guardianName = guardianMatch[1].trim();
+      // const houseMatch = trimmedLine.match(housePattern);
+      // if (houseMatch) houseNo = houseMatch[1];
+      
+      // const guardianMatch = trimmedLine.match(guardianPattern);
+      // if (guardianMatch) guardianName = guardianMatch[1].trim();
     }
     
     return {
       voterId,
-      name,
-      age,
-      gender,
-      houseNo,
-      guardianName,
-      allLines: lines
+      ...result,
+      allLines: lines,
+      data: result
     };
   }
 
