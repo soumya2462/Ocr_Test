@@ -17,7 +17,7 @@ class EnhancedOCRProcessor {
     console.log('🔧 Initializing Tesseract workers for Odia...');
     
     // Main OCR worker
-    this.worker = await createWorker(['eng', 'ori'], 1, {
+    this.worker = await createWorker([ 'ori'], 1, {
       logger: m => {
         if (m.status === 'recognizing text') {
           process.stdout.write(`\r  OCR Progress: ${Math.round(m.progress * 100)}%`);

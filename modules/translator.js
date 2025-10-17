@@ -1,7 +1,7 @@
-const translate = require('translate');
+// const translate = require('translate');
 const fs = require('fs').promises;
 
-translate.engine = 'google';
+// translate.engine = 'google';
 
 class Translator {
   constructor() {
@@ -22,6 +22,8 @@ class Translator {
   }
 
   async translateToEnglish(text) {
+    const translate = await import('translate');
+    translate.engine = 'google';
     if (!text || text.trim() === '') return '';
 
     const normalizedText = this.normalizeText(text);

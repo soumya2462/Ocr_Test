@@ -2,11 +2,11 @@
 // Usage
 const inputText = `ନାମ: John Doe  
 
-          Age: 67     Gender : Female   ସ୍ବାମୀଙ୍କ ନାମ: ସଂଜୟ ବେହେରା   extra unrelated text`;
+          Age: 67    QQ: 37 ଲିଗଂ : ସୀ   ସ୍ବାମୀଙ୍କ ନାମ: ସଂଜୟ ବେହେରା   extra unrelated text`;
 
 function extractKeyValues(inputText) {
     const result = {};
-    const defkeys = [
+    const keys = [
         ["ନାମ", "Name"],
         ["ବୟସ", "Age"],
         ["ଲିଂଗ", "Gender"],
@@ -65,7 +65,7 @@ function extractKeyValues(inputText) {
     return result;
 }
 
-module.exports = { extractKeyValues };
-// const values = extractKeyValues(inputText, keys);
+// module.exports = { extractKeyValues };
+const values = extractKeyValues(inputText);
 
-// console.log(values);
+console.log(values);
